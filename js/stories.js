@@ -21,12 +21,14 @@ async function getAndShowStoriesOnStart() {
 
 function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
-
+  const emptyStar = `<i class="bi bi-star"></i>`;
+  const filledStar = `<i class="bi bi-star-fill"></i>`;
+  const hmtlStar = currentUser.isFavorite(story) ? filledStar : emptyStar;
   const hostName = story.getHostName();
   return $(`
-      <li id="${story.storyId}">
+      <li data-id="${story.storyId}">
         <span class="star">
-          <i class="bi bi-star"></i>
+          ${hmtlStar}
         </span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
@@ -37,6 +39,21 @@ function generateStoryMarkup(story) {
       </li>
     `);
 }
+
+
+$(".stories-list").on("click", ".star", async function(evt) {
+  const storyId = $(evt.target).closest("li").data("id");
+  const story = await Story.getStoryById(storyId);
+  console.log(story)
+})
+
+
+
+
+
+
+
+
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
@@ -53,6 +70,10 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
+
+
+
+
 
 /** Gets the story data from the form and then adds it to the list of
  * stories. Then repopulates all the stories on the page and hides the form.

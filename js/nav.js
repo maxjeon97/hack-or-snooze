@@ -42,6 +42,6 @@ function displaySubmitForm() {
   $storyForm.show();
 }
 
-$body.on("click", "#nav-submit", displaySubmitForm);
+$("#nav-submit").on("click", displaySubmitForm);
 
 

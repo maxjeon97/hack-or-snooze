@@ -27,6 +27,12 @@ class Story {
     const url = new URL(this.url);
     return url.hostname;
   }
+
+  static async getStoryById(storyId) {
+    const response = await fetch(`${BASE_URL}/stories/${storyId}`);
+    const storyData = await response.json();
+    return storyData.story;
+  }
 }
 
 
@@ -200,8 +206,24 @@ class User {
     currentUser.favorites.push(data.user.favorites[favoritesLength - 1]);
   }
 
-  removeFavorite(story) {
+  async removeFavorite(story) {
+    const storyId = story.storyId;
+    const username = currentUser.username;
+    const response =
+    await fetch(`${BASE_URL}/users/${username}/favorites/${storyId}`,
+    { method: "DELETE",
+      body: JSON.stringify({token: currentUser.loginToken}),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    const data = await response.json();
+    const favoritesLength = data.user.favorites.length;
+    currentUser.favorites.pop(data.user.favorites[favoritesLength - 1]);
+  }
 
+  isFavorite(story) {
+    return currentUser.favorites.some(entry => entry.storyId === story.storyId);
   }
 
   /** When we already have credentials (token & username) for a user,
