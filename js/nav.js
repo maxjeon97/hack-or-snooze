@@ -36,3 +36,12 @@ function updateNavOnLogin() {
   $navLogOut.show();
   $navUserProfile.text(`${currentUser.username}`).show();
 }
+
+/** Reveals hidden story submission form */
+function displaySubmitForm() {
+  $storyForm.show();
+}
+
+$body.on("click", "#nav-submit", displaySubmitForm);
+
+

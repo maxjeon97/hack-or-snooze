@@ -50,3 +50,22 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
+
+/** Gets the story data from the form and then adds it to the list of
+ * stories. Then repopulates all the stories on the page and hides the form.
+ */
+
+async function getStoryDataAndDisplay(evt) {
+  evt.preventDefault();
+  const storyData = {
+    title : $("#title").val(),
+    author : $("#author").val(),
+    url : $("#url").val()
+  };
+  await storyList.addStory(currentUser, storyData);
+  putStoriesOnPage();
+  $storyForm.hide();
+}
+
+$("#story-form").on("submit", getStoryDataAndDisplay);
+
