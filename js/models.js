@@ -184,6 +184,26 @@ class User {
     );
   }
 
+  async addFavorite(story) {
+    const storyId = story.storyId;
+    const username = currentUser.username;
+    const response =
+    await fetch(`${BASE_URL}/users/${username}/favorites/${storyId}`,
+    { method: "POST",
+      body: JSON.stringify({token: currentUser.loginToken}),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    const data = await response.json();
+    const favoritesLength = data.user.favorites.length;
+    currentUser.favorites.push(data.user.favorites[favoritesLength - 1]);
+  }
+
+  removeFavorite(story) {
+
+  }
+
   /** When we already have credentials (token & username) for a user,
    *   we can log them in automatically. This function does that.
    */
