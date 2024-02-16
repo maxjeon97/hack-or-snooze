@@ -28,6 +28,7 @@ class Story {
     return url.hostname;
   }
 
+  /**Given a story's ID, requests story data from API and returns said data */
   static async getStoryById(storyId) {
     const response = await fetch(`${BASE_URL}/stories/${storyId}`);
     const storyData = await response.json();
@@ -190,6 +191,9 @@ class User {
     );
   }
 
+  /** Given a story's data, send data to API and add to user's list of
+   * favorites, and update local user data
+   */
   async addFavorite(story) {
     const storyId = story.storyId;
     const username = currentUser.username;
@@ -206,6 +210,9 @@ class User {
     currentUser.favorites.push(data.user.favorites[favoritesLength - 1]);
   }
 
+  /** Given a story's data, send a request to the API to remove said story
+   * from user's list of favorites, and update local user data
+   */
   async removeFavorite(story) {
     const storyId = story.storyId;
     const username = currentUser.username;
@@ -222,6 +229,9 @@ class User {
     currentUser.favorites.pop(data.user.favorites[favoritesLength - 1]);
   }
 
+  /** Given a story, check to see if said story exists in the user's list of
+   * favorites. Returns a Boolean value
+   */
   isFavorite(story) {
     return currentUser.favorites.some(entry => entry.storyId === story.storyId);
   }

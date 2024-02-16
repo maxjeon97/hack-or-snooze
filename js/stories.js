@@ -21,8 +21,8 @@ async function getAndShowStoriesOnStart() {
 
 function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
-  const emptyStar = `<i class="bi bi-star"></i>`;
-  const filledStar = `<i class="bi bi-star-fill"></i>`;
+  const emptyStar = '<i class="bi bi-star"></i>';
+  const filledStar = '<i class="bi bi-star-fill"></i>';
   const hmtlStar = currentUser.isFavorite(story) ? filledStar : emptyStar;
   const hostName = story.getHostName();
   return $(`
@@ -40,33 +40,29 @@ function generateStoryMarkup(story) {
     `);
 }
 
+/**When a star icon is clicked, toggle star display based on its favorite
+ * status. Also, remove and add the stories to the user's list of favorites
+ * accordingly
+ */
+
 async function handleStarClick(evt) {
-  const storyId = $(evt.target).closest("li").data("id");
+  const $evtTarget = $(evt.target);
+  const storyId = $evtTarget.closest("li").data("id");
   const story = await Story.getStoryById(storyId);
 
-  currentUser.isFavorite(story)
-  ? currentUser.removeFavorite(story)
-  : currentUser.addFavorite(story);
-
-  console.log(story);
-  generateStoryMarkup(story);
-  // if(currentUser.isFavorite(story)) {
-  //   currentUser.removeFavorite(story);
-  //   generateStoryMarkup(story);
-  // }
-  // else {
-  //   currentUser.addFavorite(story);
-  //   generateStoryMarkup(story);
-  // }
+  if(currentUser.isFavorite(story)) {
+    $evtTarget.removeClass("bi-star-fill");
+    $evtTarget.addClass("bi-star");
+    currentUser.removeFavorite(story);
+  }
+  else {
+    $evtTarget.removeClass("bi-star");
+    $evtTarget.addClass("bi-star-fill");
+    currentUser.addFavorite(story);
+  }
 }
 
 $(".stories-list").on("click", ".star", handleStarClick);
-
-
-
-
-
-
 
 
 
