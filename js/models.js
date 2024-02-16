@@ -33,7 +33,6 @@ class Story {
     const response = await fetch(`${BASE_URL}/stories/${storyId}`);
     const storyData = await response.json();
     return new Story(storyData.story);
-    //TODO:possibly create instance here instead of l52 stories.js
   }
 }
 
@@ -207,6 +206,7 @@ class User {
           "Content-Type": "application/json"
         }
       });
+
     currentUser.favorites.push(story);
   }
 
@@ -225,8 +225,7 @@ class User {
         }
       });
 
-    currentUser.favorites.pop();
-    // TODO: rewrite this
+    currentUser.favorites = currentUser.favorites.filter(f => f.storyId !== storyId);
   }
 
   /** Given a story, check to see if said story exists in the user's list of

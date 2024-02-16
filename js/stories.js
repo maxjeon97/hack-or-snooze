@@ -21,14 +21,11 @@ async function getAndShowStoriesOnStart() {
 
 function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
-  const emptyStar = '<i class="bi bi-star"></i>';
-  const filledStar = '<i class="bi bi-star-fill"></i>';
-  const hmtlStar = currentUser.isFavorite(story) ? filledStar : emptyStar;
   const hostName = story.getHostName();
   return $(`
       <li data-id="${story.storyId}">
         <span class="star">
-          ${hmtlStar}
+          <i class="bi bi-star"></i>
         </span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
@@ -49,7 +46,6 @@ async function handleStarClick(evt) {
   const $evtTarget = $(evt.target);
   const storyId = $evtTarget.closest("li").data("id");
   const story = await Story.getStoryById(storyId);
-  //TODO: refactored
 
   if (currentUser.isFavorite(story)) {
     $evtTarget.removeClass("bi-star-fill");
@@ -64,7 +60,6 @@ async function handleStarClick(evt) {
 }
 
 $(".stories-list").on("click", ".star", handleStarClick);
-
 
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
