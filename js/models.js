@@ -195,45 +195,43 @@ class User {
   /** Given a story's data, send data to API and add to user's list of
    * favorites, and update local user data
    */
+
   async addFavorite(story) {
-    const storyId = story.storyId;
-    const username = currentUser.username;
-    await fetch(`${BASE_URL}/users/${username}/favorites/${storyId}`,
-      {
-        method: "POST",
-        body: JSON.stringify({ token: currentUser.loginToken }),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
-    //TODO: use "this" instead of currentUser
-    currentUser.favorites.push(story);
+    await this._addOrRemoveFavorites(story, "POST")
+
+    this.favorites.push(story);
   }
 
   /** Given a story's data, send a request to the API to remove said story
    * from user's list of favorites, and update local user data
    */
-  //TODO: use internal function _functionName
+
   async removeFavorite(story) {
+    await this._addOrRemoveFavorites(story, "DELETE")
+
+    this.favorites = this.favorites.filter(f => f.storyId !== story.storyId);
+  }
+
+  /** Given a method, either add or remove favorites */
+
+  async _addOrRemoveFavorites(story, method) {
     const storyId = story.storyId;
-    const username = currentUser.username;
+    const username = this.username;
     await fetch(`${BASE_URL}/users/${username}/favorites/${storyId}`,
       {
-        method: "DELETE",
-        body: JSON.stringify({ token: currentUser.loginToken }),
+        method,
+        body: JSON.stringify({ token: this.loginToken }),
         headers: {
           "Content-Type": "application/json"
         }
       });
-
-    currentUser.favorites = currentUser.favorites.filter(f => f.storyId !== storyId);
   }
 
   /** Given a story, check to see if said story exists in the user's list of
    * favorites. Returns a Boolean value
    */
-  isFavorite(story) { //TODO: use this
-    return currentUser.favorites.some(entry => entry.storyId === story.storyId);
+  isFavorite(story) {
+    return this.favorites.some(entry => entry.storyId === story.storyId);
   }
 
   /** When we already have credentials (token & username) for a user,

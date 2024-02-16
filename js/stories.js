@@ -22,19 +22,11 @@ async function getAndShowStoriesOnStart() {
 function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
   const hostName = story.getHostName();
-  let favoriteIcon;
-  //TODO: function decomp
-  if(currentUser) {
-    favoriteIcon = currentUser.isFavorite(story)
-    ? '<i class="bi bi-star-fill"></i>'
-    : '<i class="bi bi-star"></i>';
-  } else {
-    favoriteIcon = "";
-  }
+  const starHtml = generateStarHtml(story, currentUser);
   return $(`
       <li data-id="${story.storyId}">
         <span class="star">
-          ${favoriteIcon}
+          ${starHtml}
         </span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
@@ -44,6 +36,19 @@ function generateStoryMarkup(story) {
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
+}
+
+/** Generates starHTML given a story and the currentUser */
+
+function generateStarHtml(story, user) {
+  if(user) {
+    return user.isFavorite(story)
+    ? '<i class="bi bi-star-fill"></i>'
+    : '<i class="bi bi-star"></i>';
+  }
+
+  // if no user is logged in, html should be empty
+  return "";
 }
 
 /**When a star icon is clicked, toggle star display based on its favorite
@@ -56,15 +61,12 @@ async function handleStarClick(evt) {
   const storyId = $evtTarget.closest("li").data("id");
   const story = await Story.getStoryById(storyId);
 
-  //TODO: check the class instead, use jquery .toggle()
-  if (currentUser.isFavorite(story)) {
-    $evtTarget.removeClass("bi-star-fill");
-    $evtTarget.addClass("bi-star");
+  if ($evtTarget.hasClass("bi-star-fill")) {
+    $evtTarget.toggleClass("bi-star-fill bi-star");
     await currentUser.removeFavorite(story);
   }
   else {
-    $evtTarget.removeClass("bi-star");
-    $evtTarget.addClass("bi-star-fill");
+    $evtTarget.toggleClass("bi-star-fill bi-star");
     await currentUser.addFavorite(story);
   }
 }
@@ -87,7 +89,12 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
-//TODO: docstring
+
+/** Empties favorites list, iterates through the user's list of favorites,
+ * generates story HTML for each story, and attaches favorited story to the
+ * favorites list. Reveals the previously hidden favorites list
+ */
+
 function putFavoritesOnPage() {
   $favoritesList.empty();
 
