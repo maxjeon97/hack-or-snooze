@@ -39,6 +39,7 @@
 
 /* Star element cursor change */
 
-.star {
+.star, .trash {
   cursor: pointer;
 }
+

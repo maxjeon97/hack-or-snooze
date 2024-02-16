@@ -34,7 +34,7 @@ function generateStoryMarkup(story) {
         </a>
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
-        <span class="star">
+        <span class="trash">
           ${trashHtml}
         </span>
         <small class="story-user">posted by ${story.username}</small>
@@ -46,7 +46,7 @@ function generateStoryMarkup(story) {
 
 function generateStarHtml(story, user) {
   if (user) {
-    return user.isFavorite(story)
+    return user.isFavoritedByUser(story)
       ? '<i class="bi bi-star-fill"></i>'
       : '<i class="bi bi-star"></i>';
   }
@@ -77,20 +77,34 @@ async function handleStarClick(evt) {
 
 $(".stories-container").on("click", ".star", handleStarClick);
 
+/** Given a story and a user, add trash icon to any story that is submitted
+ * by that user
+ */
+
 function generateTrashHtml(story, user) {
   if (user) {
-    return user.isMyStory(story)
-      ? '<i class="bi bi-trash"></i>'
-      : "";
+    if (user.isOwnedByUser(story)) {
+      return '<i class="bi bi-trash"></i>';
+    }
+    // return nothing if story is not inside user's own stories
+    return "";
   }
 }
 
 
+/** When a trash icon is clicked, delete the story from the API, and remove
+ * it from the DOM
+ */
 
+async function handleTrashClick(evt) {
+  const $evtTarget = $(evt.target);
+  const storyId = $evtTarget.closest("li").data("id");
+  await Story.deleteStory(storyId);
+  $evtTarget.closest("li").remove();
+  storyList.stories = storyList.stories.filter(s => s.storyId !== storyId);
+}
 
-
-
-
+$(".stories-container").on("click", ".trash", handleTrashClick);
 
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */

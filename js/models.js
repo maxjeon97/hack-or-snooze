@@ -34,6 +34,21 @@ class Story {
     const storyData = await response.json();
     return new Story(storyData.story);
   }
+
+  /**Given a story's ID, delete the story from the API*/
+  static async deleteStory(storyId) {
+    await fetch(`${BASE_URL}/stories/${storyId}`,
+      {
+        method: "DELETE",
+        body: JSON.stringify({ token: currentUser.loginToken }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+    currentUser.ownStories =
+      currentUser.ownStories.filter(s => s.storyId !== storyId);
+  }
 }
 
 
@@ -94,6 +109,9 @@ class StoryList {
       });
     const data = await response.json();
     const newStory = new Story(data.story);
+
+    // updates current user's list of submitted stories on front end
+    currentUser.ownStories.push(newStory);
 
     this.stories.unshift(newStory);
 
@@ -197,7 +215,7 @@ class User {
    */
 
   async addFavorite(story) {
-    await this._addOrRemoveFavorites(story, "POST")
+    await this._addOrRemoveFavorites(story, "POST");
 
     this.favorites.push(story);
   }
@@ -207,7 +225,7 @@ class User {
    */
 
   async removeFavorite(story) {
-    await this._addOrRemoveFavorites(story, "DELETE")
+    await this._addOrRemoveFavorites(story, "DELETE");
 
     this.favorites = this.favorites.filter(f => f.storyId !== story.storyId);
   }
@@ -230,14 +248,15 @@ class User {
   /** Given a story, check to see if said story exists in the user's list of
    * favorites. Returns a Boolean value
    */
-  isFavorite(story) {
+  isFavoritedByUser(story) {
     return this.favorites.some(entry => entry.storyId === story.storyId);
   }
+
 
   /** Given a story, check to see if said story exists in the user's list of
    * own stories. Returns a Boolean value
    */
-  isMyStory(story) {
+  isOwnedByUser(story) {
     return this.ownStories.some(entry => entry.storyId === story.storyId);
   }
 
