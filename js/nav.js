@@ -55,3 +55,11 @@ function navAllFavorites(evt) {
 }
 
 $("#nav-favorites").on("click", navAllFavorites);
+
+function navMyStories(evt) {
+  evt.preventDefault();
+  hidePageComponents();
+  putMyStoriesOnPage();
+}
+
+$("#nav-mystories").on("click", navMyStories);

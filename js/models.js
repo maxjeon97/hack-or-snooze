@@ -234,6 +234,13 @@ class User {
     return this.favorites.some(entry => entry.storyId === story.storyId);
   }
 
+  /** Given a story, check to see if said story exists in the user's list of
+   * own stories. Returns a Boolean value
+   */
+  isMyStory(story) {
+    return this.ownStories.some(entry => entry.storyId === story.storyId);
+  }
+
   /** When we already have credentials (token & username) for a user,
    *   we can log them in automatically. This function does that.
    */

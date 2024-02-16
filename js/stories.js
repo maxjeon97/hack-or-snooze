@@ -23,6 +23,7 @@ function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
   const hostName = story.getHostName();
   const starHtml = generateStarHtml(story, currentUser);
+  const trashHtml = generateTrashHtml(story, currentUser);
   return $(`
       <li data-id="${story.storyId}">
         <span class="star">
@@ -33,6 +34,9 @@ function generateStoryMarkup(story) {
         </a>
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
+        <span class="star">
+          ${trashHtml}
+        </span>
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
@@ -71,7 +75,22 @@ async function handleStarClick(evt) {
   }
 }
 
-$(".stories-list").on("click", ".star", handleStarClick);
+$(".stories-container").on("click", ".star", handleStarClick);
+
+function generateTrashHtml(story, user) {
+  if (user) {
+    return user.isMyStory(story)
+      ? '<i class="bi bi-trash"></i>'
+      : "";
+  }
+}
+
+
+
+
+
+
+
 
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
@@ -105,6 +124,26 @@ function putFavoritesOnPage() {
   }
   $favoritesList.show();
 }
+
+/** Empties my stories list, iterates through the user's list of my stories,
+ * generates story HTML for each story, and attaches user's story to the
+ * my stories list. Reveals the previously hidden my stories list
+ */
+
+function putMyStoriesOnPage() {
+  $myStoriesList.empty();
+
+  const myStories = currentUser.ownStories;
+  for (let story of myStories) {
+    const $story = generateStoryMarkup(story);
+    $myStoriesList.append($story);
+  }
+  $myStoriesList.show();
+}
+
+
+
+
 
 
 
