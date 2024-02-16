@@ -41,10 +41,10 @@ function generateStoryMarkup(story) {
 /** Generates starHTML given a story and the currentUser */
 
 function generateStarHtml(story, user) {
-  if(user) {
+  if (user) {
     return user.isFavorite(story)
-    ? '<i class="bi bi-star-fill"></i>'
-    : '<i class="bi bi-star"></i>';
+      ? '<i class="bi bi-star-fill"></i>'
+      : '<i class="bi bi-star"></i>';
   }
 
   // if no user is logged in, html should be empty
@@ -62,12 +62,12 @@ async function handleStarClick(evt) {
   const story = await Story.getStoryById(storyId);
 
   if ($evtTarget.hasClass("bi-star-fill")) {
-    $evtTarget.toggleClass("bi-star-fill bi-star");
     await currentUser.removeFavorite(story);
+    $evtTarget.toggleClass("bi-star-fill bi-star");
   }
   else {
-    $evtTarget.toggleClass("bi-star-fill bi-star");
     await currentUser.addFavorite(story);
+    $evtTarget.toggleClass("bi-star-fill bi-star");
   }
 }
 
