@@ -40,12 +40,27 @@ function generateStoryMarkup(story) {
     `);
 }
 
-
-$(".stories-list").on("click", ".star", async function(evt) {
+async function handleStarClick(evt) {
   const storyId = $(evt.target).closest("li").data("id");
   const story = await Story.getStoryById(storyId);
-  console.log(story)
-})
+
+  currentUser.isFavorite(story)
+  ? currentUser.removeFavorite(story)
+  : currentUser.addFavorite(story);
+
+  console.log(story);
+  generateStoryMarkup(story);
+  // if(currentUser.isFavorite(story)) {
+  //   currentUser.removeFavorite(story);
+  //   generateStoryMarkup(story);
+  // }
+  // else {
+  //   currentUser.addFavorite(story);
+  //   generateStoryMarkup(story);
+  // }
+}
+
+$(".stories-list").on("click", ".star", handleStarClick);
 
 
 
@@ -86,7 +101,6 @@ async function getStoryDataAndDisplay(evt) {
     author : $("#author").val(),
     url : $("#url").val()
   };
-  await storyList.addStory(currentUser, storyData);
   const newStory = await storyList.addStory(currentUser, storyData);
   const $story = generateStoryMarkup(newStory);
   $allStoriesList.prepend($story);
