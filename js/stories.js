@@ -22,10 +22,19 @@ async function getAndShowStoriesOnStart() {
 function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
   const hostName = story.getHostName();
+  let favoriteIcon;
+  //TODO: function decomp
+  if(currentUser) {
+    favoriteIcon = currentUser.isFavorite(story)
+    ? '<i class="bi bi-star-fill"></i>'
+    : '<i class="bi bi-star"></i>';
+  } else {
+    favoriteIcon = "";
+  }
   return $(`
       <li data-id="${story.storyId}">
         <span class="star">
-          <i class="bi bi-star"></i>
+          ${favoriteIcon}
         </span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
@@ -47,6 +56,7 @@ async function handleStarClick(evt) {
   const storyId = $evtTarget.closest("li").data("id");
   const story = await Story.getStoryById(storyId);
 
+  //TODO: check the class instead, use jquery .toggle()
   if (currentUser.isFavorite(story)) {
     $evtTarget.removeClass("bi-star-fill");
     $evtTarget.addClass("bi-star");
@@ -77,7 +87,7 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
-
+//TODO: docstring
 function putFavoritesOnPage() {
   $favoritesList.empty();
 

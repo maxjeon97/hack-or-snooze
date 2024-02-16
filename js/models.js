@@ -206,13 +206,14 @@ class User {
           "Content-Type": "application/json"
         }
       });
-
+    //TODO: use "this" instead of currentUser
     currentUser.favorites.push(story);
   }
 
   /** Given a story's data, send a request to the API to remove said story
    * from user's list of favorites, and update local user data
    */
+  //TODO: use internal function _functionName
   async removeFavorite(story) {
     const storyId = story.storyId;
     const username = currentUser.username;
@@ -231,7 +232,7 @@ class User {
   /** Given a story, check to see if said story exists in the user's list of
    * favorites. Returns a Boolean value
    */
-  isFavorite(story) {
+  isFavorite(story) { //TODO: use this
     return currentUser.favorites.some(entry => entry.storyId === story.storyId);
   }
 
