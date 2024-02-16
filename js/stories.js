@@ -49,17 +49,16 @@ async function handleStarClick(evt) {
   const $evtTarget = $(evt.target);
   const storyId = $evtTarget.closest("li").data("id");
   const story = await Story.getStoryById(storyId);
-  const newStory = new Story(story);
 
-  if(currentUser.isFavorite(story)) {
+  if (currentUser.isFavorite(story)) {
     $evtTarget.removeClass("bi-star-fill");
     $evtTarget.addClass("bi-star");
-    currentUser.removeFavorite(newStory);
+    await currentUser.removeFavorite(story);
   }
   else {
     $evtTarget.removeClass("bi-star");
     $evtTarget.addClass("bi-star-fill");
-    currentUser.addFavorite(newStory);
+    await currentUser.addFavorite(story);
   }
 }
 
@@ -103,13 +102,14 @@ function putFavoritesOnPage() {
 async function getStoryDataAndDisplay(evt) {
   evt.preventDefault();
   const storyData = {
-    title : $("#title").val(),
-    author : $("#author").val(),
-    url : $("#url").val()
+    title: $("#title").val(),
+    author: $("#author").val(),
+    url: $("#url").val()
   };
   const newStory = await storyList.addStory(currentUser, storyData);
   const $story = generateStoryMarkup(newStory);
   $allStoriesList.prepend($story);
+  $storyForm.trigger("reset");
   $storyForm.hide();
 }
 

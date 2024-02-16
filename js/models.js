@@ -32,7 +32,7 @@ class Story {
   static async getStoryById(storyId) {
     const response = await fetch(`${BASE_URL}/stories/${storyId}`);
     const storyData = await response.json();
-    return storyData.story;
+    return new Story(storyData.story);
     //TODO:possibly create instance here instead of l52 stories.js
   }
 }
@@ -81,17 +81,18 @@ class StoryList {
    * Returns the new Story instance
    */
 
-  async addStory(user, {title, author, url}) {
+  async addStory(user, { title, author, url }) {
     const response = await fetch(`${BASE_URL}/stories`,
-    { method: "POST",
-      body: JSON.stringify({
-        token: user.loginToken,
-        story: {title, author, url}
-      }),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+      {
+        method: "POST",
+        body: JSON.stringify({
+          token: user.loginToken,
+          story: { title, author, url }
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
     const data = await response.json();
     const newStory = new Story(data.story);
 
@@ -199,12 +200,13 @@ class User {
     const storyId = story.storyId;
     const username = currentUser.username;
     await fetch(`${BASE_URL}/users/${username}/favorites/${storyId}`,
-    { method: "POST",
-      body: JSON.stringify({token: currentUser.loginToken}),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+      {
+        method: "POST",
+        body: JSON.stringify({ token: currentUser.loginToken }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
     currentUser.favorites.push(story);
   }
 
@@ -215,13 +217,15 @@ class User {
     const storyId = story.storyId;
     const username = currentUser.username;
     await fetch(`${BASE_URL}/users/${username}/favorites/${storyId}`,
-    { method: "DELETE",
-      body: JSON.stringify({token: currentUser.loginToken}),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    currentUser.favorites.pop();
+      {
+        method: "DELETE",
+        body: JSON.stringify({ token: currentUser.loginToken }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+    currentUser.favorites = currentUser.favorites
+      .filter(f => f.storyId !== storyId);
   }
 
   /** Given a story, check to see if said story exists in the user's list of
