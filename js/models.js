@@ -224,8 +224,9 @@ class User {
           "Content-Type": "application/json"
         }
       });
-    currentUser.favorites = currentUser.favorites
-      .filter(f => f.storyId !== storyId);
+
+    currentUser.favorites.pop();
+    // TODO: rewrite this
   }
 
   /** Given a story, check to see if said story exists in the user's list of

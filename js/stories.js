@@ -49,6 +49,7 @@ async function handleStarClick(evt) {
   const $evtTarget = $(evt.target);
   const storyId = $evtTarget.closest("li").data("id");
   const story = await Story.getStoryById(storyId);
+  //TODO: refactored
 
   if (currentUser.isFavorite(story)) {
     $evtTarget.removeClass("bi-star-fill");
