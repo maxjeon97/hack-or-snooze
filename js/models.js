@@ -33,6 +33,7 @@ class Story {
     const response = await fetch(`${BASE_URL}/stories/${storyId}`);
     const storyData = await response.json();
     return storyData.story;
+    //TODO:possibly create instance here instead of l52 stories.js
   }
 }
 
@@ -197,7 +198,6 @@ class User {
   async addFavorite(story) {
     const storyId = story.storyId;
     const username = currentUser.username;
-    const response =
     await fetch(`${BASE_URL}/users/${username}/favorites/${storyId}`,
     { method: "POST",
       body: JSON.stringify({token: currentUser.loginToken}),
@@ -205,9 +205,7 @@ class User {
         "Content-Type": "application/json"
       }
     });
-    const data = await response.json();
-    const favoritesLength = data.user.favorites.length;
-    currentUser.favorites.push(data.user.favorites[favoritesLength - 1]);
+    currentUser.favorites.push(story);
   }
 
   /** Given a story's data, send a request to the API to remove said story
@@ -216,7 +214,6 @@ class User {
   async removeFavorite(story) {
     const storyId = story.storyId;
     const username = currentUser.username;
-    const response =
     await fetch(`${BASE_URL}/users/${username}/favorites/${storyId}`,
     { method: "DELETE",
       body: JSON.stringify({token: currentUser.loginToken}),
@@ -224,9 +221,7 @@ class User {
         "Content-Type": "application/json"
       }
     });
-    const data = await response.json();
-    const favoritesLength = data.user.favorites.length;
-    currentUser.favorites.pop(data.user.favorites[favoritesLength - 1]);
+    currentUser.favorites.pop();
   }
 
   /** Given a story, check to see if said story exists in the user's list of

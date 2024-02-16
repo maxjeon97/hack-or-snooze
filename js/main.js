@@ -6,6 +6,7 @@ const $body = $("body");
 
 const $storiesLoadingMsg = $("#stories-loading-msg");
 const $allStoriesList = $("#all-stories-list");
+const $favoritesList = $("#favorites-list");
 
 const $loginForm = $("#login-form");
 const $signupForm = $("#signup-form");
@@ -13,6 +14,7 @@ const $signupForm = $("#signup-form");
 const $navLogin = $("#nav-login");
 const $navUserProfile = $("#nav-user-profile");
 const $navLogOut = $("#nav-logout");
+
 
 const $storyForm = $("#story-form");
 

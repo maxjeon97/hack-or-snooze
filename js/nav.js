@@ -46,3 +46,12 @@ function displaySubmitForm() {
 $("#nav-submit").on("click", displaySubmitForm);
 
 
+/** hides page components and displays favorite list */
+
+function navAllFavorites(evt) {
+  evt.preventDefault();
+  hidePageComponents();
+  putFavoritesOnPage();
+}
+
+$("#nav-favorites").on("click", navAllFavorites);

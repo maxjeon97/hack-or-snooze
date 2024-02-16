@@ -49,16 +49,17 @@ async function handleStarClick(evt) {
   const $evtTarget = $(evt.target);
   const storyId = $evtTarget.closest("li").data("id");
   const story = await Story.getStoryById(storyId);
+  const newStory = new Story(story);
 
   if(currentUser.isFavorite(story)) {
     $evtTarget.removeClass("bi-star-fill");
     $evtTarget.addClass("bi-star");
-    currentUser.removeFavorite(story);
+    currentUser.removeFavorite(newStory);
   }
   else {
     $evtTarget.removeClass("bi-star");
     $evtTarget.addClass("bi-star-fill");
-    currentUser.addFavorite(story);
+    currentUser.addFavorite(newStory);
   }
 }
 
@@ -70,7 +71,7 @@ $(".stories-list").on("click", ".star", handleStarClick);
 
 function putStoriesOnPage() {
   console.debug("putStoriesOnPage");
-
+  $favoritesList.hide();
   $allStoriesList.empty();
 
   // loop through all of our stories and generate HTML for them
@@ -82,7 +83,16 @@ function putStoriesOnPage() {
   $allStoriesList.show();
 }
 
+function putFavoritesOnPage() {
+  $favoritesList.empty();
 
+  const favorites = currentUser.favorites;
+  for (let story of favorites) {
+    const $story = generateStoryMarkup(story);
+    $favoritesList.prepend($story);
+  }
+  $favoritesList.show();
+}
 
 
 
@@ -104,4 +114,8 @@ async function getStoryDataAndDisplay(evt) {
 }
 
 $("#story-form").on("submit", getStoryDataAndDisplay);
+
+
+
+
 
